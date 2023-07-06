@@ -17,7 +17,6 @@ import java.util.Optional;
 @Controller
 public class EventController {
 
-
     private final EventRepository eventRepository;
     private final SessionRepository sessionRepository;
 
@@ -37,7 +36,7 @@ public class EventController {
     }
 
     @SchemaMapping
-    public Window<Session> sessions(Event event, ScrollSubrange subrange) {
+    Window<Session> sessions(Event event, ScrollSubrange subrange) {
         return sessionRepository.findByEventId(event.getId(), subrange.position().orElse(ScrollPosition.offset()), Sort.by("title").ascending());
     }
 
