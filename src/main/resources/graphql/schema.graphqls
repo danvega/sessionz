@@ -6,6 +6,8 @@ type Query {
     event(id: ID!): Event
     speakers: [Speaker]
     speaker(id: ID!): Speaker
+    sessions: [Session]!
+    session(id: ID!): Session
 }
 
 type Event {
