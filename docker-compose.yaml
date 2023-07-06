@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: sessionz
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: dvega
+    ports:
+      - '5432'
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@localhost.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+        - '5050:5050'
+  zipkin:
+    image: openzipkin/zipkin-slim
+    ports:
+      - '9411:9411'
+    labels:
+      org.springframework.boot.service-connection: zipkin
