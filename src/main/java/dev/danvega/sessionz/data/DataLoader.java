@@ -34,44 +34,47 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        
+        if(eventRepository.count() == 0) {
 
-        var event = new Event(1,
-                "SpringOne at VMware Explore",
-                "Join us at the biggest gathering of Spring enthusiasts, beginners and practitioners who build the apps that make the world run. This year, we are excited to have the developer-focused SpringOne event unite with the incredible VMware Explore 2023 in Las Vegas. Learn how Spring can take you from code to production at speed with its support for modern application architectures that run seamlessly on any cloud.",
-                LocalDate.of(2023,8,21),
-                LocalDate.of(2023,8,24),
-                LocalDate.now().minusDays(180),
-                LocalDate.now().minusDays(90),
-                "Las Vegas, NV",
-                "https://springone.io/");
+            var event = new Event(1,
+                    "SpringOne at VMware Explore",
+                    "Join us at the biggest gathering of Spring enthusiasts, beginners and practitioners who build the apps that make the world run. This year, we are excited to have the developer-focused SpringOne event unite with the incredible VMware Explore 2023 in Las Vegas. Learn how Spring can take you from code to production at speed with its support for modern application architectures that run seamlessly on any cloud.",
+                    LocalDate.of(2023,8,21),
+                    LocalDate.of(2023,8,24),
+                    LocalDate.now().minusDays(180),
+                    LocalDate.now().minusDays(90),
+                    "Las Vegas, NV",
+                    "https://springone.io/");
 
-        eventRepository.save(event);
+            eventRepository.save(event);
 
-        List<Speaker> speakers = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            speakers.add(new Speaker(i,
-                    faker.name().fullName(),
-                    faker.name().title(),
-                    faker.company().name(),
-                    Gender.MALE,
-                    faker.address().country(),
-                    faker.internet().emailAddress(),
-                    faker.phoneNumber().phoneNumber(),
-                    faker.twitter().userName()));
+            List<Speaker> speakers = new ArrayList<>();
+            for (int i = 1; i <= 20; i++) {
+                speakers.add(new Speaker(i,
+                        faker.name().fullName(),
+                        faker.name().title(),
+                        faker.company().name(),
+                        Gender.MALE,
+                        faker.address().country(),
+                        faker.internet().emailAddress(),
+                        faker.phoneNumber().phoneNumber(),
+                        faker.twitter().userName()));
+
+            }
+            speakerRepository.saveAll(speakers);
+
+            List<Session> sessions = new ArrayList<>();
+            for (int i = 1; i <= 100; i++) {
+                sessions.add(new Session(i,
+                        faker.book().title(),
+                        faker.lorem().paragraph(),
+                        Level.values()[faker.number().numberBetween(0, Level.values().length - 1)],
+                        event));
+            }
+            sessionRepository.saveAll(sessions);
 
         }
-        speakerRepository.saveAll(speakers);
-
-        List<Session> sessions = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
-            sessions.add(new Session(i,
-                    faker.book().title(),
-                    faker.lorem().paragraph(),
-                    Level.values()[faker.number().numberBetween(0, Level.values().length - 1)],
-                    event));
-        }
-        sessionRepository.saveAll(sessions);
-
 
     }
 
