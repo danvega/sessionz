@@ -2,6 +2,7 @@ package dev.danvega.sessionz.event;
 
 import dev.danvega.sessionz.session.Session;
 import dev.danvega.sessionz.session.SessionRepository;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Window;
@@ -37,7 +38,10 @@ public class EventController {
 
     @SchemaMapping
     Window<Session> sessions(Event event, ScrollSubrange subrange) {
-        return sessionRepository.findByEventId(event.getId(), subrange.position().orElse(ScrollPosition.offset()), Sort.by("title").ascending());
+        ScrollPosition scrollPosition = subrange.position().orElse(ScrollPosition.offset());
+        Limit limit = Limit.of(subrange.count().orElse(10));
+        Sort sort = Sort.by("title").ascending();
+        return sessionRepository.findByEventId(event.getId(), scrollPosition, limit, sort);
     }
 
 }
