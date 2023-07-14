@@ -3,6 +3,9 @@ package dev.danvega.sessionz.session;
 import dev.danvega.sessionz.event.Event;
 import jakarta.persistence.*;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 public final class Session {
 
@@ -13,18 +16,24 @@ public final class Session {
         private String description;
         @Enumerated(EnumType.STRING)
         private Level level;
-        // private List<Tag> tags;
+        @ManyToMany
+        @JoinTable(
+                name = "session_tags",
+                joinColumns = @JoinColumn(name = "tag_id"),
+                inverseJoinColumns = @JoinColumn(name = "session_id"))
+        private Set<Tag> tags;
         @ManyToOne
         private Event event;
 
         public Session() {
         }
 
-        public Session(Integer id, String title, String description, Level level, Event event) {
+        public Session(Integer id, String title, String description, Level level, Set<Tag> tags, Event event) {
                 this.id = id;
                 this.title = title;
                 this.description = description;
                 this.level = level;
+                this.tags = tags;
                 this.event = event;
         }
 
@@ -60,6 +69,14 @@ public final class Session {
                 this.level = level;
         }
 
+        public Set<Tag> getTags() {
+                return tags;
+        }
+
+        public void setTags(Set<Tag> tags) {
+                this.tags = tags;
+        }
+
         public Event getEvent() {
                 return event;
         }
@@ -75,6 +92,7 @@ public final class Session {
                         ", title='" + title + '\'' +
                         ", description='" + description + '\'' +
                         ", level=" + level +
+                        ", tags=" + tags +
                         ", event=" + event +
                         '}';
         }

@@ -2,12 +2,10 @@ package dev.danvega.sessionz.data;
 
 import dev.danvega.sessionz.event.Event;
 import dev.danvega.sessionz.event.EventRepository;
-import dev.danvega.sessionz.session.Session;
-import dev.danvega.sessionz.session.SessionRepository;
+import dev.danvega.sessionz.session.*;
 import dev.danvega.sessionz.speaker.Gender;
 import dev.danvega.sessionz.speaker.Speaker;
 import dev.danvega.sessionz.speaker.SpeakerRepository;
-import dev.danvega.sessionz.session.Level;
 import net.datafaker.Faker;
 
 import org.springframework.boot.CommandLineRunner;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -23,17 +22,25 @@ public class DataLoader implements CommandLineRunner {
     private final EventRepository eventRepository;
     private final SpeakerRepository speakerRepository;
     private final SessionRepository sessionRepository;
+    private final TagRepository tagRepository;
     private final Faker faker;
 
-    public DataLoader(EventRepository eventRepository, SpeakerRepository speakerRepository, SessionRepository sessionRepository) {
+    public DataLoader(EventRepository eventRepository, SpeakerRepository speakerRepository, SessionRepository sessionRepository, TagRepository tagRepository) {
         this.eventRepository = eventRepository;
         this.speakerRepository = speakerRepository;
         this.sessionRepository = sessionRepository;
+        this.tagRepository = tagRepository;
         this.faker = new Faker();
     }
 
     @Override
     public void run(String... args) throws Exception {
+
+        if(tagRepository.count() == 0) {
+            Tag springBootTag = new Tag("Spring Boot");
+            Tag springFrameworkTag = new Tag("Spring Framework");
+            tagRepository.saveAll(List.of(springBootTag,springFrameworkTag));
+        }
         
         if(eventRepository.count() == 0) {
 
@@ -55,7 +62,7 @@ public class DataLoader implements CommandLineRunner {
                         faker.name().fullName(),
                         faker.name().title(),
                         faker.company().name(),
-                        Gender.MALE,
+                        Gender.values()[faker.number().numberBetween(0,Gender.values().length)],
                         faker.address().country(),
                         faker.internet().emailAddress(),
                         faker.phoneNumber().phoneNumber(),
@@ -69,7 +76,8 @@ public class DataLoader implements CommandLineRunner {
                 sessions.add(new Session(i,
                         faker.book().title(),
                         faker.lorem().paragraph(),
-                        Level.values()[faker.number().numberBetween(0, Level.values().length - 1)],
+                        Level.values()[faker.number().numberBetween(0, Level.values().length)],
+                        Set.of(tagRepository.findAll().toArray(new Tag[0])),
                         event));
             }
             sessionRepository.saveAll(sessions);
