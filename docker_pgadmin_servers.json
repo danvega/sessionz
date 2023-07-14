@@ -5,8 +5,7 @@
       "Group": "Servers",
       "Port": 5432,
       "Username": "dvega",
-      "Password": "password",
-      "Host": "postgres",
+      "Host": "sessionz_postgres",
       "SSLMode": "prefer",
       "MaintenanceDB": "sessionz",
       "PassFile": "/tmp/pgpassfile"
