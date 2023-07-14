@@ -27,9 +27,8 @@ type Session {
     id: ID!
     title: String!
     description: String!
-    tags: [Tag]!
+    tags: [Tag]
     level: String!
-    targetAudience: String!
 }
 
 type Tag {
